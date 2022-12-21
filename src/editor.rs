@@ -3,9 +3,15 @@ use crate::Terminal;
 
 const VERSION: &str = env!("CARGO_PKG_VERSION");
 
+pub struct Position{
+    pub x: usize,
+    pub y: usize,
+}
+
 pub struct Editor{ //construtor
     should_quit: bool,
     terminal: Terminal,
+    cursor_position: Position,
 }
 
 impl Editor{
@@ -28,18 +34,20 @@ impl Editor{
         Self {
             should_quit:false,
             terminal: Terminal::default().expect("Failed to initialize terminal"),
+            cursor_position: Position{x : 0, y : 0},
         }
     }
 
     fn refresh_screen(&self) -> Result<(), std::io::Error>{ //clearing screen and drawing rows
         Terminal::cursor_hide(); //cursor hide and show are to hide the cursor when drawing to the screen
+        Terminal::cursor_position(&Position {x:0, y:0} );
         if self.should_quit{
             Terminal::clear_screen();
-            println!("Goodbye. \r");
+            println!("Goodbye.\r");
         }
         else{
             self.draw_rows();
-            Terminal::cursor_position(0,0); //set cursor position to 0,0
+            Terminal::cursor_position(&self.cursor_position); //set cursor position to 0,0
         }
         Terminal::cursor_show();
         Terminal::flush()
