@@ -12,6 +12,7 @@ pub struct Editor{ //construtor
     should_quit: bool,
     terminal: Terminal,
     cursor_position: Position,
+    //test test test
 }
 
 impl Editor{
@@ -35,6 +36,9 @@ impl Editor{
             should_quit:false,
             terminal: Terminal::default().expect("Failed to initialize terminal"),
             cursor_position: Position{x : 0, y : 0},
+                //test test test
+                //test test test
+                //test test test
         }
     }
 
