@@ -14,14 +14,13 @@ impl From<&str> for Row{
         };
         row.update_len();
         row
-
     }
 }
 
 impl Row{
     pub fn render(&self, start: usize, end: usize) -> String{
         let end = cmp::min(end, self.string.len());
-        let start = cmp::min(start,end);
+        let start = cmp::min(start, end);
         let mut result = String::new();
         for grapheme in self.string[..]
             .graphemes(true)
@@ -36,10 +35,10 @@ impl Row{
         }
         result
     }
-    pub fn len(&self)->usize{
+    pub fn len(&self) -> usize{
         self.len
     }
-    pub fn is_empty(&self)->bool{
+    pub fn is_empty(&self) -> bool{
         self.len == 0
     }
     fn update_len(&mut self){

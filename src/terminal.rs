@@ -1,4 +1,4 @@
-use std::io::{self,stdout, Write};
+use std::io::{self, stdout, Write};
 use termion::event::Key;
 use termion::input::TermRead;
 use termion::raw::{IntoRawMode, RawTerminal};
@@ -9,7 +9,6 @@ pub struct Size{ //struct for the size that can be referenced
     pub width: u16,
     pub height: u16,
 }
-
 pub struct Terminal{ //public constructor
     size: Size,
     _stdout: RawTerminal<std::io::Stdout>,
@@ -26,15 +25,14 @@ impl Terminal{
             _stdout: stdout().into_raw_mode()?,
         })
     }
-    
     pub fn size(&self) -> &Size{ //accessor
         &self.size
     }
-
     pub fn clear_screen(){ //clears screen
         print!("{}", termion::clear::All);
     }
 
+    #[allow(clippy::cast_possible_truncation)]
     pub fn cursor_position(position: &Position){ //reset cursor
         let Position{mut x, mut y} = position;
         x = x.saturating_add(1);
@@ -43,11 +41,9 @@ impl Terminal{
         let y = y as u16;
         print!("{}", termion::cursor::Goto(x,y));
     }
-
     pub fn flush() -> Result<(), std::io::Error>{ //flush
         io::stdout().flush()
     }
-
     pub fn read_key() -> Result<Key, std::io::Error>{ //reading keys from stdin
         loop{
             if let Some(key) = io::stdin().lock().keys().next(){
@@ -55,15 +51,12 @@ impl Terminal{
             }
         }
     }
-
     pub fn cursor_hide(){
         print!("{}", termion::cursor::Hide);
     }
-
     pub fn cursor_show(){
         print!("{}", termion::cursor::Show);
     }
-
     pub fn clear_current_line(){
         print!("{}", termion::clear::CurrentLine);
     }
@@ -79,5 +72,4 @@ impl Terminal{
     pub fn reset_fg_color(){
         print!("{}", color::Fg(color::Reset));
     }
-
 }

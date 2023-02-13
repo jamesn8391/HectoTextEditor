@@ -1,4 +1,4 @@
-use crate::document::Document;
+use crate::Document;
 use crate::Row;
 use termion::event::Key;
 use crate::Terminal;
@@ -41,7 +41,6 @@ pub struct Editor{ //construtor
 
 impl Editor{
     pub fn run(&mut self){
-
         loop{ //main loop for processing data
             if let Err(error) = self.refresh_screen(){
                 die(error);
@@ -54,7 +53,6 @@ impl Editor{
             }
         }
     }
-
     pub fn default() -> Self{
         let args: Vec<String> = env::args().collect();
         let mut initial_status = String::from("HELP: Ctrl-C = quit");
@@ -93,8 +91,8 @@ impl Editor{
             self.draw_status_bar();
             self.draw_message_bar();
             Terminal::cursor_position(&Position {
-                 x: self.cursor_position.x.saturating_add(self.offset.x), 
-                 y: self.cursor_position.y.saturating_add(self.offset.y), 
+                 x: self.cursor_position.x.saturating_sub(self.offset.x), 
+                 y: self.cursor_position.y.saturating_sub(self.offset.y), 
                 }); //set cursor position to 0,0
         }
         Terminal::cursor_show();
@@ -128,14 +126,14 @@ impl Editor{
             offset.y = y;
         } 
         else if y >= offset.y.saturating_add(height){
-            offset.y = y.saturating_add(height).saturating_add(1);
+            offset.y = y.saturating_sub(height).saturating_add(1);
         }
 
         if x < offset.x{
             offset.x = x;
         } 
         else if x >= offset.x.saturating_add(width){
-            offset.x = x.saturating_add(width).saturating_add(1);
+            offset.x = x.saturating_sub(width).saturating_add(1);
         }
     }
 
