@@ -25,9 +25,11 @@ impl Terminal{
             _stdout: stdout().into_raw_mode()?,
         })
     }
+
     pub fn size(&self) -> &Size{ //accessor
         &self.size
     }
+
     pub fn clear_screen(){ //clears screen
         print!("{}", termion::clear::All);
     }
@@ -41,9 +43,11 @@ impl Terminal{
         let y = y as u16;
         print!("{}", termion::cursor::Goto(x,y));
     }
+
     pub fn flush() -> Result<(), std::io::Error>{ //flush
         io::stdout().flush()
     }
+
     pub fn read_key() -> Result<Key, std::io::Error>{ //reading keys from stdin
         loop{
             if let Some(key) = io::stdin().lock().keys().next(){
@@ -51,25 +55,33 @@ impl Terminal{
             }
         }
     }
+
     pub fn cursor_hide(){
         print!("{}", termion::cursor::Hide);
     }
+
     pub fn cursor_show(){
         print!("{}", termion::cursor::Show);
     }
+
     pub fn clear_current_line(){
         print!("{}", termion::clear::CurrentLine);
     }
+
     pub fn set_bg_color(color: color::Rgb){
         print!("{}", color::Bg(color));
     }
+
     pub fn reset_bg_color(){
         print!("{}", color::Bg(color::Reset));
     }
+
     pub fn set_fg_color(color: color::Rgb){
         print!("{}", color::Fg(color));
     }
+
     pub fn reset_fg_color(){
         print!("{}", color::Fg(color::Reset));
     }
+    
 }

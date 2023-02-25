@@ -21,6 +21,7 @@ struct StatusMessage{
     text: String,
     time: Instant,
 }
+    
 impl StatusMessage{
     fn from(message: String) -> Self{
         Self { 
@@ -53,22 +54,24 @@ impl Editor{
             }
         }
     }
+
     pub fn default() -> Self{
         let args: Vec<String> = env::args().collect();
         let mut initial_status = String::from("HELP: Ctrl-C = quit");
         let document = if args.len() > 1{
             let file_name = &args[1];
-            let doc = Document::open(&file_name);
+            let doc = Document::open(file_name);
             if doc.is_ok(){
                 doc.unwrap()
             } else{
-                initial_status = format!("ERR: Could not open file: {}", file_name);
+                initial_status = format!("ERR: Could not open file: {file_name}");
                 Document::default()
             }
         }
         else{
             Document::default()
         };
+
         Self {
             should_quit:false,
             terminal: Terminal::default().expect("Failed to initialize terminal"),
@@ -95,6 +98,7 @@ impl Editor{
                  y: self.cursor_position.y.saturating_sub(self.offset.y), 
                 }); //set cursor position to 0,0
         }
+
         Terminal::cursor_show();
         Terminal::flush()
     }
@@ -113,6 +117,7 @@ impl Editor{
             | Key::Home => self.move_cursor(pressed_key),
             _ => (),
         }
+
         self.scroll();
         Ok(())
     }
@@ -146,6 +151,7 @@ impl Editor{
         } else{
             0
         };
+
         match key{
             Key::Up => y = y.saturating_sub(1),            
             Key::Down =>{
@@ -182,7 +188,7 @@ impl Editor{
             }
             Key::PageDown =>{
                 y = if y.saturating_add(terminal_height) < height {
-                    y + terminal_height as usize
+                    y + terminal_height
                 } else{
                     height
                 }
@@ -191,11 +197,13 @@ impl Editor{
             Key::End => x = width,
             _ => (),
         }
+
         width = if let Some(row) = self.document.row(y){
             row.len()
         } else{
             0
         };
+
         if x > width{
             x = width;
         }
@@ -203,21 +211,22 @@ impl Editor{
     }
 
     fn draw_welcome_message(&self){ //setup to support any terminal size
-        let mut welcome_message = format!("Hecto editor -- version {}", VERSION);
+        let mut welcome_message = format!("Hecto editor -- version {VERSION}");
         let width = self.terminal.size().width as usize;
         let len = welcome_message.len();
         let padding = width.saturating_sub(len) / 2; //center screen
         let spaces = " ".repeat(padding.saturating_sub(1));
-        welcome_message = format!("~{}{}", spaces, welcome_message); //addes space formatting
+
+        welcome_message = format!("~{spaces}{welcome_message}"); //addes space formatting
         welcome_message.truncate(width); //shortens if needed
-        println!("{}\r", welcome_message);
+        println!("{welcome_message}\r");
     }
     pub fn draw_row(&self, row: &Row){
         let width = self.terminal.size().width as usize;
         let start = self.offset.x;
         let end = self.offset.x + width;
         let row = row.render(start,end);
-        println!("{}\r", row)
+        println!("{row}\r")
     }
 
     fn draw_rows(&self){ //drawing ~'s at the beginning
@@ -243,6 +252,7 @@ impl Editor{
             file_name = name.clone();
             file_name.truncate(20);
         }
+
         status = format!("{} - {} lines", file_name, self.document.len());
         
         let line_indicator = format!(
@@ -250,15 +260,17 @@ impl Editor{
             self.cursor_position.y.saturating_add(1),
             self.document.len()
         );
+        
         let len = status.len() + line_indicator.len();
         if width > len{
             status.push_str(&" ".repeat(width - len));
         }
-        status = format!("{}{}", status, line_indicator);
+
+        status = format!("{status}{line_indicator}");
         status.truncate(width);
         Terminal::set_bg_color(STATUS_BG_COLOR);
         Terminal::set_fg_color(STATUS_FG_COLOR);
-        println!("{}\r", status);
+        println!("{status}\r");
         Terminal::reset_fg_color();
         Terminal::reset_bg_color();
     }
@@ -269,7 +281,7 @@ impl Editor{
         if Instant::now() - message.time < Duration::new(5,0){
             let mut text = message.text.clone();
             text.truncate(self.terminal.size().width as usize);
-            print!("{}", text);
+            print!("{text}");
         }
     }
 }

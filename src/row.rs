@@ -28,19 +28,22 @@ impl Row{
             .take(end-start)
         {
             if grapheme == "\t" {
-                result.push_str(" ");
-            }else{
+                result.push(' ');
+            } else{
                 result.push_str(grapheme);
             }
         }
         result
     }
+
     pub fn len(&self) -> usize{
         self.len
     }
+
     pub fn is_empty(&self) -> bool{
         self.len == 0
     }
+
     fn update_len(&mut self){
         self.len = self.string[..].graphemes(true).count();
     }
