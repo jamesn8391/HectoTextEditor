@@ -54,7 +54,7 @@ impl Editor{
             }
         }
     }
-
+    #[allow(clippy::unnecessary_unwrap)]
     pub fn default() -> Self{
         let args: Vec<String> = env::args().collect();
         let mut initial_status = String::from("HELP: Ctrl-C = quit");

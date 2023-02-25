@@ -15,6 +15,7 @@ pub struct Terminal{ //public constructor
 }
 
 impl Terminal{
+    #[allow(clippy::should_implement_trait)]
     pub fn default() -> Result<Self, std::io::Error>{
         let size = termion::terminal_size()?;
         Ok(Self { //default constructor
@@ -83,5 +84,5 @@ impl Terminal{
     pub fn reset_fg_color(){
         print!("{}", color::Fg(color::Reset));
     }
-    
+
 }
