@@ -107,6 +107,10 @@ impl Editor{
         let pressed_key = Terminal::read_key()?;
         match pressed_key{
             Key::Ctrl('c') => self.should_quit = true, //set exit button to ctrl + c like terminal
+            Key::Char(c) => {
+                self.document.insert(&self.cursor_position, c);
+                self.move_cursor(Key::Right); //move cursor to the right after key is pressed
+            }
             Key:: Up 
             | Key::Down 
             | Key::Left 
