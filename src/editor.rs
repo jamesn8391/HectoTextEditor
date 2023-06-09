@@ -111,6 +111,13 @@ impl Editor{
                 self.document.insert(&self.cursor_position, c);
                 self.move_cursor(Key::Right); //move cursor to the right after key is pressed
             }
+            Key::Delete => self.document.delete(&self.cursor_position),
+            Key::Backspace => {
+                if self.cursor_position.x > 0 || self.cursor_position.y > 0 {
+                    self.move_cursor(Key::Left);
+                    self.document.delete(&self.cursor_position);
+                }
+            }
             Key:: Up 
             | Key::Down 
             | Key::Left 

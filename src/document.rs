@@ -45,4 +45,12 @@ impl Document{
         }
 
     }
+
+    pub fn delete (&mut self, at: &Position) {
+        if at.y >= self.len() {
+            return;
+        }
+        let row = self.rows.get_mut(at.y).unwrap();
+        row.delete(at.x);
+    }
 }
